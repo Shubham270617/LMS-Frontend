@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addBook } from '../store/slice/bookSlice';
-import { toggleAddBookPopup } from '../store/slice/popupSlice';
+import { toggleAddBookPopup } from '../store/slice/popUpSlice';
 import { motion } from "framer-motion";
 
 const AddBookPopup = () => {

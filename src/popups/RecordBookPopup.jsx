@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { recordBorrowedBook } from '../store/slice/borrowSlice';
-import { toggleRecordBookPopup } from '../store/slice/popupSlice';
+import { toggleRecordBookPopup } from '../store/slice/popUpSlice';
 import { motion } from 'framer-motion';
 const RecordBookPopup = ({ bookId }) => {
   const dispatch = useDispatch();

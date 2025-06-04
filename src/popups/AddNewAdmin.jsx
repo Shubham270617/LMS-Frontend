@@ -3,7 +3,7 @@ import placeholder from '../assets/placeholder.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewAdmin } from '../store/slice/userSlice';
 import { FaKey, FaWindowClose } from 'react-icons/fa';
-import { toggleAddNewAdminPopup } from '../store/slice/popupSlice';
+import { toggleAddNewAdminPopup } from '../store/slice/popUpSlice';
 import { motion } from 'framer-motion';
 
 export const AddNewAdmin = () => {

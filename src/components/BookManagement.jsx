@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Book, BookA, NotebookPen } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAddBookPopup, toggleReadBookPopup, toggleRecordBookPopup } from '../store/slice/popupSlice';
+import { toggleAddBookPopup, toggleReadBookPopup, toggleRecordBookPopup } from '../store/slice/popUpSlice';
 import { toast } from 'react-toastify';
 import { fetchAllBooks, resetBookSlice } from '../store/slice/bookSlice';
 import { fetchAllBorrowedBooks, resetBorrowSlice } from '../store/slice/borrowSlice';

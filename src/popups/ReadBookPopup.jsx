@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
-import { toggleReadBookPopup } from '../store/slice/popupSlice';
+import { toggleReadBookPopup } from '../store/slice/popUpSlice';
 
 
 const ReadBookPopup = ({ book }) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BookA, BookOpen } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleReadBookPopup } from '../store/slice/popupSlice';
+import { toggleReadBookPopup } from '../store/slice/popUpSlice';
 import { Header } from '../layout/Header';
 import { motion } from 'framer-motion';
 import ReadBookPopup from '../popups/ReadBookPopup';

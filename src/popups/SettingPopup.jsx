@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { updatePassword } from '../store/slice/authSlice'
 import { IoMdSettings } from "react-icons/io";
 import { FaWindowClose } from 'react-icons/fa';
-import { toggleSettingPopup } from '../store/slice/popupSlice'
+import { toggleSettingPopup } from '../store/slice/popUpSlice'
 import { motion } from 'framer-motion'
 
 

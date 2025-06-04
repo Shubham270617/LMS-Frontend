@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { PiKeyReturnBold } from 'react-icons/pi';
 import { FaSquareCheck } from 'react-icons/fa6';
-import { toggleReturnBookPopup } from '../store/slice/popupSlice';
+import { toggleReturnBookPopup } from '../store/slice/popUpSlice';
 import { fetchAllBooks, resetBookSlice } from '../store/slice/bookSlice';
 import { fetchAllBorrowedBooks, resetBorrowSlice } from '../store/slice/borrowSlice';
 import { toast } from 'react-toastify';
