@@ -2,6 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toggleAddBookPopup } from './popUpSlice';
 import { toast } from 'react-toastify';
+import { BASE_URL } from '../../components/config';
+
+// Helper to safely extract error messages
+const getErrorMessage = (err) =>
+  err.response?.data?.message || err.message || "Something went wrong";
 
 const bookSlice = createSlice({
   name: 'book',
@@ -12,7 +17,6 @@ const bookSlice = createSlice({
     books: [],
   },
   reducers: {
-    // Fetch Books
     fetchBooksRequest(state) {
       state.loading = true;
       state.error = null;
@@ -28,7 +32,6 @@ const bookSlice = createSlice({
       state.message = null;
     },
 
-    // Add Book
     addBookRequest(state) {
       state.loading = true;
       state.error = null;
@@ -43,7 +46,6 @@ const bookSlice = createSlice({
       state.error = action.payload;
     },
 
-    // Book Slice
     resetBookSlice(state) {
       state.loading = false;
       state.error = null;
@@ -54,39 +56,36 @@ const bookSlice = createSlice({
 
 export const fetchAllBooks = () => async (dispatch) => {
   dispatch(bookSlice.actions.fetchBooksRequest());
-  await axios
-    .get('https://lms-backend-beryl-nine.vercel.app//api/v1/book/all', { withCredentials: true })
-    .then((res) => {
-      dispatch(bookSlice.actions.fetchBooksSuccess(res.data.books));
-    })
-    .catch((err) => {
-      dispatch(bookSlice.actions.fetchBooksFailed(err.response.data.message));
+  try {
+    const res = await axios.get(`${BASE_URL}api/v1/book/all`, {
+      withCredentials: true,
     });
+    dispatch(bookSlice.actions.fetchBooksSuccess(res.data.books));
+  } catch (err) {
+    dispatch(bookSlice.actions.fetchBooksFailed(getErrorMessage(err)));
+  }
 };
 
-
-export const addBook = (data) => async (dispatch) =>{
-dispatch(bookSlice.actions.addBookRequest());
-  await axios
-    .post('https://lms-backend-beryl-nine.vercel.app//api/v1/book/admin/add', data, {
-         withCredentials: true,
-            headers: {
-            'Content-Type': 'multipart/form-data',
-            },       
-        })
-    .then((res) => {
-      bookSlice.actions.addBookSuccess(res.data.message);
-      toast.success(res.data.message);
-      dispatch(fetchAllBooks())
-      dispatch(toggleAddBookPopup())
-    })
-    .catch((err) => {
-      dispatch(bookSlice.actions.addBookFailed(err.response.data.message));
+export const addBook = (data) => async (dispatch) => {
+  dispatch(bookSlice.actions.addBookRequest());
+  try {
+    const res = await axios.post(`${BASE_URL}api/v1/book/admin/add`, data, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
+    dispatch(bookSlice.actions.addBookSuccess(res.data.message));
+    toast.success(res.data.message);
+    dispatch(fetchAllBooks());
+    dispatch(toggleAddBookPopup());
+  } catch (err) {
+    dispatch(bookSlice.actions.addBookFailed(getErrorMessage(err)));
+  }
 };
 
-export const resetBookSlice = () =>(dispatch) =>{
-dispatch(bookSlice.actions.resetBookSlice())
-}
+export const resetBookSlice = () => (dispatch) => {
+  dispatch(bookSlice.actions.resetBookSlice());
+};
 
 export default bookSlice.reducer;

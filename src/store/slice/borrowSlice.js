@@ -1,6 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toggleRecordBookPopup } from './popUpSlice';
+import { BASE_URL } from '../../components/config';
 
 const borrowSlice = createSlice({
     name: 'borrow',
@@ -87,7 +88,7 @@ const borrowSlice = createSlice({
 export const fetchUserBorrowedBooks = () => async (dispatch) => {
     dispatch(borrowSlice.actions.fetchUserBorrowedBooksRequest())
     await axios
-        .get('https://lms-backend-beryl-nine.vercel.app//api/v1/borrow/my-borrowed-books', { withCredentials: true })
+        .get(`${BASE_URL}api/v1/borrow/my-borrowed-books`, { withCredentials: true })
         .then((res) => {
             dispatch(borrowSlice.actions.fetchUserBorrowedBooksSuccess(res.data.borrowedBooks));
         })
@@ -99,7 +100,7 @@ export const fetchUserBorrowedBooks = () => async (dispatch) => {
 export const fetchAllBorrowedBooks = () => async (dispatch) => {
     dispatch(borrowSlice.actions.fetchAllBorrowedBooksRequest())
     await axios
-        .get('https://lms-backend-beryl-nine.vercel.app//api/v1/borrow/borrowed-books-by-users', { withCredentials: true })
+        .get(`${BASE_URL}api/v1/borrow/borrowed-books-by-users`, { withCredentials: true })
         .then((res) => {
             dispatch(borrowSlice.actions.fetchAllBorrowedBooksSuccess(res.data.borrowedBooks));
         })
@@ -111,7 +112,7 @@ export const fetchAllBorrowedBooks = () => async (dispatch) => {
 export const recordBorrowedBook = (email, id) => async (dispatch) => {
     dispatch(borrowSlice.actions.recordBookRequest())
     await axios
-        .post(`https://lms-backend-beryl-nine.vercel.app//api/v1/borrow/record-borrow-book/${id}`, { email}, { withCredentials: true, 
+        .post(`${BASE_URL}api/v1/borrow/record-borrow-book/${id}`, { email}, { withCredentials: true, 
             headers: { 'Content-Type': 'application/json' } })
         
         .then((res) => {
@@ -126,7 +127,7 @@ export const recordBorrowedBook = (email, id) => async (dispatch) => {
 export const returnBook = (email, bookId) => async (dispatch) => {
     dispatch(borrowSlice.actions.returnBookRequest())
     await axios
-        .put(`https://lms-backend-beryl-nine.vercel.app//api/v1/borrow/return-bowwored-books/${bookId}`, { email}, { withCredentials: true, 
+        .put(`${BASE_URL}api/v1/borrow/return-bowwored-books/${bookId}`, { email}, { withCredentials: true, 
             headers: { 'Content-Type': 'application/json' } })
         
         .then((res) => {
