@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BASE_URL } from "../../components/config";
+
+// Helper to safely extract error messages
+const getErrorMessage = (error) =>
+  error.response?.data?.message || error.message || "Something went wrong";
 
 const authSlice = createSlice({
   name: "auth",
@@ -11,7 +16,6 @@ const authSlice = createSlice({
     isAuthenticated: false,
   },
   reducers: {
-    //registration state
     regRequest(state) {
       state.loading = true;
       state.error = null;
@@ -26,7 +30,6 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
-    //otpVerification State
     otpVerificationRequest(state) {
       state.loading = true;
       state.error = null;
@@ -43,7 +46,6 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
-    //login state
     loginRequest(state) {
       state.loading = true;
       state.error = null;
@@ -60,7 +62,6 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
-    //logout state
     logoutRequest(state) {
       state.loading = true;
       state.error = null;
@@ -78,7 +79,6 @@ const authSlice = createSlice({
       state.message = null;
     },
 
-    //getuser state
     getUserRequest(state) {
       state.loading = true;
       state.error = null;
@@ -95,7 +95,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
     },
 
-    //forgotPassword State
     forgotPasswordRequest(state) {
       state.loading = true;
       state.error = null;
@@ -110,7 +109,6 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
-    //Reset Password state
     resetPasswordRequest(state) {
       state.loading = true;
       state.error = null;
@@ -127,7 +125,6 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
-    //update password
     updatePasswordRequest(state) {
       state.loading = true;
       state.error = null;
@@ -137,12 +134,11 @@ const authSlice = createSlice({
       state.loading = false;
       state.message = action.payload;
     },
-    updatePasswordFailed(state,action) {
+    updatePasswordFailed(state, action) {
       state.loading = false;
       state.error = action.payload;
     },
 
-    //resetAuthSlice
     resetAuthSlice(state) {
       state.error = null;
       state.loading = false;
@@ -160,17 +156,15 @@ export const resetAuthSlice = () => (dispatch) => {
 export const register = (data) => async (dispatch) => {
   dispatch(authSlice.actions.regRequest());
   await axios
-    .post("https://lms-backend-beryl-nine.vercel.app//api/v1/auth/register", data, {
+    .post(`${BASE_URL}api/v1/auth/register`, data, {
       withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
     .then((res) => {
       dispatch(authSlice.actions.regSuccess(res.data));
     })
     .catch((error) => {
-      dispatch(authSlice.actions.regFailed(error.response.data.message));
+      dispatch(authSlice.actions.regFailed(getErrorMessage(error)));
     });
 };
 
@@ -178,46 +172,40 @@ export const otpVerification = (email, otp) => async (dispatch) => {
   dispatch(authSlice.actions.otpVerificationRequest());
   await axios
     .post(
-      "https://lms-backend-beryl-nine.vercel.app//api/v1/auth/verify-otp",
+      `${BASE_URL}api/v1/auth/verify-otp`,
       { email, otp },
       {
         withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       }
     )
     .then((res) => {
       dispatch(authSlice.actions.otpVerificationSuccess(res.data));
     })
     .catch((error) => {
-      dispatch(
-        authSlice.actions.otpVerificationFailed(error.response.data.message)
-      );
+      dispatch(authSlice.actions.otpVerificationFailed(getErrorMessage(error)));
     });
 };
 
 export const login = (data) => async (dispatch) => {
   dispatch(authSlice.actions.loginRequest());
   await axios
-    .post("https://lms-backend-beryl-nine.vercel.app//api/v1/auth/login", data, {
+    .post(`${BASE_URL}api/v1/auth/login`, data, {
       withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
     .then((res) => {
       dispatch(authSlice.actions.loginSuccess(res.data));
     })
     .catch((error) => {
-      dispatch(authSlice.actions.loginFailed(error.response.data.message));
+      dispatch(authSlice.actions.loginFailed(getErrorMessage(error)));
     });
 };
 
 export const logout = () => async (dispatch) => {
   dispatch(authSlice.actions.logoutRequest());
   await axios
-    .get("https://lms-backend-beryl-nine.vercel.app//api/v1/auth/logout", {
+    .get(`${BASE_URL}api/v1/auth/logout`, {
       withCredentials: true,
     })
     .then((res) => {
@@ -225,21 +213,21 @@ export const logout = () => async (dispatch) => {
       dispatch(authSlice.actions.resetAuthSlice());
     })
     .catch((error) => {
-      dispatch(authSlice.actions.logoutFailed(error.response.data.message));
+      dispatch(authSlice.actions.logoutFailed(getErrorMessage(error)));
     });
 };
 
 export const getUser = () => async (dispatch) => {
   dispatch(authSlice.actions.getUserRequest());
   await axios
-    .get("https://lms-backend-beryl-nine.vercel.app//api/v1/auth/me", {
+    .get(`${BASE_URL}api/v1/auth/me`, {
       withCredentials: true,
     })
     .then((res) => {
       dispatch(authSlice.actions.getUserSucess(res.data));
     })
     .catch((error) => {
-      dispatch(authSlice.actions.getUserFailed(error.response.data.message));
+      dispatch(authSlice.actions.getUserFailed(getErrorMessage(error)));
     });
 };
 
@@ -247,59 +235,48 @@ export const forgotPassword = (email) => async (dispatch) => {
   dispatch(authSlice.actions.forgotPasswordRequest());
   await axios
     .post(
-      "https://lms-backend-beryl-nine.vercel.app//api/v1/auth/password/forgot",
+      `${BASE_URL}api/v1/auth/password/forgot`,
       { email },
       {
         withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       }
     )
     .then((res) => {
       dispatch(authSlice.actions.forgotPasswordSucess(res.data.message));
     })
     .catch((error) => {
-      dispatch(
-        authSlice.actions.forgotPasswordFailed(error.response.data.message)
-      );
+      dispatch(authSlice.actions.forgotPasswordFailed(getErrorMessage(error)));
     });
 };
 
 export const resetPassword = (data, token) => async (dispatch) => {
   dispatch(authSlice.actions.resetPasswordRequest());
   await axios
-    .put(`https://lms-backend-beryl-nine.vercel.app//api/v1/auth/password/reset/${token}`, data, {
+    .put(`${BASE_URL}api/v1/auth/password/reset/${token}`, data, {
       withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
     .then((res) => {
       dispatch(authSlice.actions.resetPasswordSucess(res.data));
     })
     .catch((error) => {
-      dispatch(
-        authSlice.actions.resetPasswordFailed(error.response.data.message)
-      );
+      dispatch(authSlice.actions.resetPasswordFailed(getErrorMessage(error)));
     });
 };
 
 export const updatePassword = (data) => async (dispatch) => {
   dispatch(authSlice.actions.updatePasswordRequest());
   await axios
-    .put("https://lms-backend-beryl-nine.vercel.app//api/v1/auth/password/update", data, {
+    .put(`${BASE_URL}api/v1/auth/password/update`, data, {
       withCredentials: true,
     })
     .then((res) => {
       dispatch(authSlice.actions.updatePasswordSucess(res.data.message));
     })
     .catch((error) => {
-      dispatch(
-        authSlice.actions.updatePasswordFailed(error.response.data.message)
-      );
+      dispatch(authSlice.actions.updatePasswordFailed(getErrorMessage(error)));
     });
 };
-
 
 export default authSlice.reducer;
