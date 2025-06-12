@@ -14,20 +14,29 @@ import { fetchAllBooks } from './store/slice/bookSlice';
 import { fetchAllBorrowedBooks, fetchUserBorrowedBooks } from './store/slice/borrowSlice';
 
 const App = () => {
+  const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();  
+
+  // Fetch user info once on mount (not repeatedly on each isAuthenticated change)
   useEffect(() => {
     dispatch(getUser());
-    dispatch(fetchAllBooks());
-    if (isAuthenticated && user?.role === 'User') {
-      dispatch(fetchUserBorrowedBooks());
+  }, [dispatch]);
+
+  // Now only fetch protected data *after* user is authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchAllBooks());
+
+      if (user?.role === 'User') {
+        dispatch(fetchUserBorrowedBooks());
+      }
+
+      if (user?.role === 'Admin') {
+        dispatch(fetchAllUsers());
+        dispatch(fetchAllBorrowedBooks());
+      }
     }
-    if (isAuthenticated && user?.role === 'Admin') {
-      dispatch(fetchAllUsers());
-      dispatch(fetchAllBorrowedBooks())
-    }
-  }, [isAuthenticated]);
-  
+  }, [isAuthenticated, user?.role, dispatch]);
 
   return (
     <Router>
@@ -39,11 +48,8 @@ const App = () => {
         <Route path="/otp-verification/:email" element={<OTP />} />
         <Route path="/password/reset/:token" element={<ResetPassword />} />
       </Routes>
-      <ToastContainer
-  theme="colored"
-  // style={{ zIndex: 99999 }} // very high
-  // position="top-right" // or "bottom-right" if you prefer
-/>
+
+      <ToastContainer theme="colored" />
     </Router>
   );
 };
