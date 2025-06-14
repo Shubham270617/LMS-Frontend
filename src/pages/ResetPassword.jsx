@@ -12,7 +12,7 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  const {token} = useParams()
+  const {token} = useParams();
 
   const dispatch = useDispatch();
 

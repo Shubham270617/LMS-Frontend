@@ -219,16 +219,21 @@ export const logout = () => async (dispatch) => {
 
 export const getUser = () => async (dispatch) => {
   dispatch(authSlice.actions.getUserRequest());
-  await axios
-    .get(`${BASE_URL}api/v1/auth/me`, {
+  try {
+    const res = await axios.get(`${BASE_URL}api/v1/auth/me`, {
       withCredentials: true,
-    })
-    .then((res) => {
-      dispatch(authSlice.actions.getUserSucess(res.data));
-    })
-    .catch((error) => {
-      dispatch(authSlice.actions.getUserFailed(getErrorMessage(error)));
     });
+    dispatch(authSlice.actions.getUserSucess(res.data));
+  } catch (error) {
+    const message = getErrorMessage(error);
+
+    if (error.response?.status === 401) {
+      // Do not treat as a major error, maybe just leave user unauthenticated
+      dispatch(authSlice.actions.getUserFailed());
+    } else {
+      dispatch(authSlice.actions.getUserFailed(message));
+    }
+  }
 };
 
 export const forgotPassword = (email) => async (dispatch) => {
